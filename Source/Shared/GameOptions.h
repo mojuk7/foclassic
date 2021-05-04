@@ -244,6 +244,14 @@ struct GameOptions
     uint         RainTick;
     short        RainSpeedX;
     short        RainSpeedY;
+	uint         ItemContourColor;
+	uint         ContainerContourColor;
+	uint         MiscContourColor;
+	bool         ShowItemContour;
+	bool         ShowContainerContour;
+	bool         ShowMiscContour;
+	uint8        CurrentSkill;
+	bool         AllowOverweightBarterNPC;
 
     // Mapper
     ScriptString ClientPath;

@@ -11847,6 +11847,11 @@ void FOClient::SScriptFunc::Global_DrawMapSprite( uint16 hx, uint16 hy, uint16 p
 
         if( FLAG( proto_item->Flags, ITEM_FLAG_BAD_ITEM ) )
             spr.SetContour( CONTOUR_RED );
+		
+		if( proto_item->IsItem() && proto_item->IsContainer() && GameOpt.ShowContainerContour )
+			spr.SetContour( CONTOUR_CUSTOM, GameOpt.ContainerContourColor );
+		else if(  proto_item->IsItem() && proto_item->IsMisc() && FLAG( proto_item->Flags, ITEM_FLAG_CAN_PICKUP) && FLAG( proto_item->Flags, ITEM_FLAG_NO_HIGHLIGHT ) && GameOpt.ShowMiscContour )
+			spr.SetContour( CONTOUR_CUSTOM, GameOpt.MiscContourColor );
     }
 }
 

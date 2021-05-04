@@ -5146,6 +5146,21 @@ void FOServer::SScriptFunc::Global_RadioMessage( uint16 channel, ScriptString& t
     ItemMngr.RadioSendTextEx( channel, RADIO_BROADCAST_FORCE_ALL, 0, 0, 0, text.c_str(), (uint)text.length(), 0, false, 0, 0, NULL );
 }
 
+void FOServer::SScriptFunc::Global_RadioMessageFull(uint16 channel, ScriptString& text, int broadcast_type, uint from_map_id, uint16 from_wx, uint16 from_wy )
+{
+	ItemMngr.RadioSendTextEx( channel, broadcast_type, from_map_id, from_wx, from_wy, text.c_str(), (uint) text.length(), 0, false, 0, 0, NULL );
+}
+
+void FOServer::SScriptFunc::Global_RadioMessageFullMsg(uint16 channel, uint16 text_msg, uint num_str, int broadcast_type, uint from_map_id, uint16 from_wx, uint16 from_wy )
+{
+    ItemMngr.RadioSendTextEx( channel, broadcast_type, from_map_id, from_wx, from_wy, NULL, 0, 0, false, text_msg, text_msg, NULL );
+}
+
+void FOServer::SScriptFunc::Global_RadioMessageFullMsgLex(uint16 channel, uint16 text_msg, uint num_str, ScriptString* lexems, int broadcast_type, uint from_map_id, uint16 from_wx, uint16 from_wy )
+{
+    ItemMngr.RadioSendTextEx( channel, broadcast_type, from_map_id, from_wx, from_wy, NULL, 0, 0, false, text_msg, num_str, lexems && lexems->length() ? lexems->c_str() : NULL );
+}
+
 void FOServer::SScriptFunc::Global_RadioMessageMsg( uint16 channel, uint16 text_msg, uint num_str )
 {
     ItemMngr.RadioSendTextEx( channel, RADIO_BROADCAST_FORCE_ALL, 0, 0, 0, NULL, 0, 0, false, text_msg, num_str, NULL );
@@ -5350,6 +5365,11 @@ bool FOServer::SScriptFunc::Global_EraseTimeEvent( uint num )
 bool FOServer::SScriptFunc::Global_GetTimeEvent( uint num, uint& duration, ScriptArray* values )
 {
     return GetTimeEvent( num, duration, values );
+}
+
+uint FOServer::SScriptFunc::Global_GetTimeEventsByName( ScriptString& scriptName, ScriptArray* nums )
+{
+    return GetTimeEventsByName( scriptName.c_std_str(), nums );
 }
 
 bool FOServer::SScriptFunc::Global_SetTimeEvent( uint num, uint duration, ScriptArray* values )

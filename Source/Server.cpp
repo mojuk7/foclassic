@@ -5399,6 +5399,84 @@ bool FOServer::GetTimeEvent( uint num, uint& duration, ScriptArray* values )
     return true;
 }
 
+uint FOServer::GetTimeEventsByName( const string& scriptName, ScriptArray* nums)
+{
+    TimeEventsLocker.Lock();
+
+	uint    index = 0;
+
+    TimeEvent* te = NULL;
+    uint       tid = Thread::GetCurrentId();
+	UIntVec te_vec;
+
+    // Find events
+    for( auto it = TimeEvents.begin(), end = TimeEvents.end(); it != end; ++it )
+    {
+        TimeEvent* te_ = *it;
+        if( te_->FuncName == scriptName )
+	    {
+            te_vec.push_back( index );
+			te = te_;    
+        }
+		index++;
+		//------------------------------
+		// Event not found or erased
+        if( !te || te->EraseMe )
+        {
+			continue;
+        }
+
+        // Wait of other threads end work with event
+        if( te->InProcess && te->InProcess != tid )
+        {
+            TimeEventsLocker.Unlock();
+            Thread::Sleep( 0 );
+            TimeEventsLocker.Lock();
+        }
+        else
+        {
+            // Begin work with event
+			continue;
+        }
+
+    // Lock for current thread
+    if( LogicMT )
+        te->InProcess = tid;
+
+    // Add end of script execution callback to unlock event if SetTimeEvent not be called
+    if( LogicMT )
+        Script::AddEndExecutionCallback( TimeEventEndScriptCallback );
+	//------------------------
+    }
+
+	uint size = (uint) te_vec.size();
+
+	// if( !size || ( !nums && !durations && !values ) )
+	if( !size || !nums )
+	{
+		TimeEventsLocker.Unlock();
+		return size;
+	}
+
+	// uint nums_size = 0, durations_size = 0, values_size = 0;
+	uint nums_size = 0;
+
+	if( nums )
+	{
+		nums_size = nums->GetSize();
+		nums->Resize( nums_size + size );
+	}
+	
+	for( uint i = 0; i < size; i++ )
+    {
+        TimeEvent* te_ = TimeEvents[ te_vec[ i ] ];
+        if( nums )
+            *(uint*) nums->At( nums_size + i ) = te_->Num;
+    }
+	TimeEventsLocker.Unlock();
+    return size;
+}
+
 bool FOServer::SetTimeEvent( uint num, uint duration, ScriptArray* values )
 {
     TimeEventsLocker.Lock();

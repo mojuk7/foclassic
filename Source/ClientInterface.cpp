@@ -2557,30 +2557,37 @@ void FOClient::GameKeyDown( uint8 dik, const char* dik_text )
                 break;
             case DIK_2:
                 CurSkill = SK_LOCKPICK;
+				GameOpt.CurrentSkill = SK_LOCKPICK;
                 SetCurMode( CURSOR_USE_SKILL );
                 break;
             case DIK_3:
                 CurSkill = SK_STEAL;
+				GameOpt.CurrentSkill = SK_STEAL;
                 SetCurMode( CURSOR_USE_SKILL );
                 break;
             case DIK_4:
                 CurSkill = SK_TRAPS;
+				GameOpt.CurrentSkill = SK_TRAPS;
                 SetCurMode( CURSOR_USE_SKILL );
                 break;
             case DIK_5:
                 CurSkill = SK_FIRST_AID;
+				GameOpt.CurrentSkill = SK_FIRST_AID;
                 SetCurMode( CURSOR_USE_SKILL );
                 break;
             case DIK_6:
                 CurSkill = SK_DOCTOR;
+				GameOpt.CurrentSkill = SK_DOCTOR;
                 SetCurMode( CURSOR_USE_SKILL );
                 break;
             case DIK_7:
                 CurSkill = SK_SCIENCE;
+				GameOpt.CurrentSkill = SK_SCIENCE;
                 SetCurMode( CURSOR_USE_SKILL );
                 break;
             case DIK_8:
                 CurSkill = SK_REPAIR;
+				GameOpt.CurrentSkill = SK_REPAIR;
                 SetCurMode( CURSOR_USE_SKILL );
                 break;
             default:
@@ -2675,6 +2682,7 @@ void FOClient::GameLMouseDown()
         }
 
         SetCurMode( CURSOR_DEFAULT );
+		GameOpt.CurrentSkill = 0;
     }
 }
 
@@ -3121,7 +3129,11 @@ void FOClient::AddMess( int mess_type, const char* msg )
     if( mess_type < 0 || mess_type > MSGBOX_VIEW )
         Str::Format( str, "%s\n", msg );
     else
-        Str::Format( str, "|%u %c |%u %s\n", str_color[mess_type], TEXT_SYMBOL_DOT, COLOR_TEXT, msg );
+        Str::Format( str, "|%u %s |%u %s\n", str_color[ mess_type ], "•" /*TEXT_SYMBOL_DOT*/, COLOR_TEXT, msg );
+
+	// Play monitor.acm sound, Fallout/Fallout 2's "pop" sound.
+	if( mess_type != MSGBOX_COMBAT_RESULT)
+		SndMngr.PlaySound( "monitor" );
 
     // Time
     DateTime dt;
@@ -4124,7 +4136,7 @@ void FOClient::BarterTryOffer()
             return;
         if( c1 < c2 && BarterK )
             BarterText = MsgGame->GetStr( STR_BARTER_BAD_OFFER );
-        else if( Chosen->GetFreeWeight() + w1 < w2 )
+        else if( Chosen->GetFreeWeight() + w1 < w2 && !GameOpt.AllowOverweightBarterNPC )
             BarterText = MsgGame->GetStr( STR_BARTER_OVERWEIGHT );
         else if( Chosen->GetFreeVolume() + v1 < v2 )
             BarterText = MsgGame->GetStr( STR_BARTER_OVERSIZE );
@@ -4445,8 +4457,16 @@ void FOClient::LMenuStayOff()
     if( TargetSmth.IsItem() )
     {
         ItemHex* item = GetItem( TargetSmth.GetId() );
-        if( item && item->IsDrawContour() && item->SprDrawValid )
+        if( item && item->IsBadItem() )
+            item->SprDraw->SetContour( CONTOUR_RED );
+		else if( item && item->IsDrawContour() && item->SprDrawValid && !GameOpt.ShowItemContour)
             item->SprDraw->SetContour( 0 );
+		else if( item && item->IsDrawContour() && item->SprDrawValid && GameOpt.ShowItemContour)
+			item->SprDraw->SetContour( CONTOUR_CUSTOM, GameOpt.ItemContourColor );
+		else if( item && item->IsContainer() && GameOpt.ShowContainerContour && item->SprDrawValid)
+			item->SprDraw->SetContour( CONTOUR_CUSTOM, GameOpt.ContainerContourColor );
+		else if( item && item->IsMisc() && GameOpt.ShowMiscContour && !item->IsDrawContour() && item->SprDrawValid)
+			item->SprDraw->SetContour( CONTOUR_CUSTOM, GameOpt.MiscContourColor );
     }
     if( TargetSmth.IsCritter() )
     {

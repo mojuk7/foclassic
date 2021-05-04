@@ -154,6 +154,7 @@ public:
     static uint   CreateTimeEvent( uint begin_second, const char* script_name, int values, uint val1, ScriptArray* val2, bool save );
     static void   TimeEventEndScriptCallback();
     static bool   GetTimeEvent( uint num, uint& duration, ScriptArray* values );
+	static uint   GetTimeEventsByName( const string& scriptName, ScriptArray* nums );
     static bool   SetTimeEvent( uint num, uint duration, ScriptArray* values );
     static bool   EraseTimeEvent( uint num );
     static void   ProcessTimeEvents();
@@ -852,6 +853,9 @@ public:
         static void          Global_DeleteNpc( Critter* npc );
         static void          Global_DeleteNpcForce( Critter* npc );
         static void          Global_RadioMessage( uint16 channel, ScriptString& text );
+		static void          Global_RadioMessageFull(uint16 channel, ScriptString& text, int broadcast_type, uint from_map_id, uint16 from_wx, uint16 from_wy );
+		static void          Global_RadioMessageFullMsg(uint16 channel, uint16 text_msg, uint num_str, int broadcast_type, uint from_map_id, uint16 from_wx, uint16 from_wy );
+		static void          Global_RadioMessageFullMsgLex(uint16 channel, uint16 text_msg, uint num_str, ScriptString* lexems, int broadcast_type, uint from_map_id, uint16 from_wx, uint16 from_wy );
         static void          Global_RadioMessageMsg( uint16 channel, uint16 text_msg, uint num_str );
         static void          Global_RadioMessageMsgLex( uint16 channel, uint16 text_msg, uint num_str, ScriptString* lexems );
         static uint          Global_GetFullSecond( uint16 year, uint16 month, uint16 day, uint16 hour, uint16 minute, uint16 second );
@@ -870,6 +874,7 @@ public:
         static uint          Global_CreateTimeEventValues( uint begin_second, ScriptString& script_name, ScriptArray& values, bool save );
         static bool          Global_EraseTimeEvent( uint num );
         static bool          Global_GetTimeEvent( uint num, uint& duration, ScriptArray* data );
+		static uint          Global_GetTimeEventsByName( ScriptString& scriptName, ScriptArray* nums );
         static bool          Global_SetTimeEvent( uint num, uint duration, ScriptArray* data );
         static bool          Global_SetAnyData( ScriptString& name, ScriptArray& data );
         static bool          Global_SetAnyDataSize( ScriptString& name, ScriptArray& data, uint data_size_bytes );

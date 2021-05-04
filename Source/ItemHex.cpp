@@ -4,6 +4,7 @@
 #include "Random.h"
 #include "ResourceManager.h"
 #include "Timer.h"
+#include "GameOptions.h"
 
 AnyFrames* ItemHex::DefaultAnim = NULL;
 
@@ -283,6 +284,13 @@ void ItemHex::SetSprite( Sprite* spr )
         SprDraw->SetEgg( GetEggType() );
         if( IsBadItem() )
             SprDraw->SetContour( CONTOUR_RED );
+		else if(GameOpt.ShowItemContour && IsItem() && !IsDoor() && !IsCar() && IsDrawContour() && SprDrawValid )
+			SprDraw->SetContour( CONTOUR_CUSTOM, GameOpt.ItemContourColor );
+
+		else if( IsContainer() && GameOpt.ShowContainerContour && SprDrawValid )
+			SprDraw->SetContour( CONTOUR_CUSTOM, GameOpt.ContainerContourColor );
+		else if ( IsItem() && IsMisc() && GameOpt.ShowMiscContour && IsUsable() && !IsDrawContour() && SprDrawValid )
+			SprDraw->SetContour( CONTOUR_CUSTOM, GameOpt.MiscContourColor );
     }
 }
 

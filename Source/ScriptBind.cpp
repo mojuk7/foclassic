@@ -568,6 +568,14 @@ bool ScriptBind::RegisterAll( asIScriptEngine* engine, const uint8& app )
         RegisterGlobalProperty( engine, "uint __Anim2CombatBegin", &GameOpt.Anim2CombatBegin );
         RegisterGlobalProperty( engine, "uint __Anim2CombatIdle", &GameOpt.Anim2CombatIdle );
         RegisterGlobalProperty( engine, "uint __Anim2CombatEnd", &GameOpt.Anim2CombatEnd );
+		RegisterGlobalProperty( engine, "uint __ItemContourColor", &GameOpt.ItemContourColor );
+		RegisterGlobalProperty( engine, "uint __ContainerContourColor", &GameOpt.ContainerContourColor );
+		RegisterGlobalProperty( engine, "uint __MiscContourColor", &GameOpt.MiscContourColor );
+		RegisterGlobalProperty( engine, "bool __ShowItemContour", &GameOpt.ShowItemContour );
+		RegisterGlobalProperty( engine, "bool __ShowContainerContour", &GameOpt.ShowContainerContour );
+		RegisterGlobalProperty( engine, "bool __ShowMiscContour", &GameOpt.ShowMiscContour );
+		RegisterGlobalProperty( engine, "uint8 __CurrentSkill", &GameOpt.CurrentSkill );
+		RegisterGlobalProperty( engine, "bool __AllowOverweightBarterNPC", &GameOpt.AllowOverweightBarterNPC );
     }
     #endif
 
@@ -916,10 +924,14 @@ bool ScriptBind::RegisterAll( asIScriptEngine* engine, const uint8& app )
         RegisterGlobalFunction( engine, "bool EraseTimeEvent(uint num)", focFUNCTION( BIND_CLASS Global_EraseTimeEvent ), asCALL_CDECL );
         RegisterGlobalFunction( engine, "bool GetTimeEvent(uint num, uint& duration, uint[]@+ values)", focFUNCTION( BIND_CLASS Global_GetTimeEvent ), asCALL_CDECL );
         RegisterGlobalFunction( engine, "bool GetTimeEvent(uint num, uint& duration, int[]@+ values)", focFUNCTION( BIND_CLASS Global_GetTimeEvent ), asCALL_CDECL );
+		RegisterGlobalFunction( engine, "uint GetTimeEventsByName(string& scriptName, uint[]@+ nums)", focFUNCTION( BIND_CLASS Global_GetTimeEventsByName ), asCALL_CDECL );
         RegisterGlobalFunction( engine, "bool SetTimeEvent(uint num, uint duration, uint[]@+ values)", focFUNCTION( BIND_CLASS Global_SetTimeEvent ), asCALL_CDECL );
         RegisterGlobalFunction( engine, "bool SetTimeEvent(uint num, uint duration, int[]@+ values)", focFUNCTION( BIND_CLASS Global_SetTimeEvent ), asCALL_CDECL );
 
         RegisterGlobalFunction( engine, "void RadioMessage(uint16 channel, string& text)", focFUNCTION( BIND_CLASS Global_RadioMessage ), asCALL_CDECL );
+		RegisterGlobalFunction( engine, "void RadioMessage(uint16 channel, string& text, int broadcast_type, uint from_map_id, uint16 from_wx, uint16 from_wy)", focFUNCTION( BIND_CLASS Global_RadioMessageFull ), asCALL_CDECL );
+		RegisterGlobalFunction( engine, "void RadioMessageMsg(uint16 channel,uint16 textMsg, uint strNum, int broadcast_type, uint from_map_id, uint16 from_wx, uint16 from_wy)", focFUNCTION( BIND_CLASS Global_RadioMessageFullMsg ), asCALL_CDECL );
+		RegisterGlobalFunction( engine, "void RadioMessageMsg(uint16 channel,uint16 textMsg, uint strNum, string@+ lexems, int broadcast_type, uint from_map_id, uint16 from_wx, uint16 from_wy)", focFUNCTION( BIND_CLASS Global_RadioMessageFullMsgLex ), asCALL_CDECL );
         RegisterGlobalFunction( engine, "void RadioMessageMsg(uint16 channel, uint16 textMsg, uint strNum)", focFUNCTION( BIND_CLASS Global_RadioMessageMsg ), asCALL_CDECL );
         RegisterGlobalFunction( engine, "void RadioMessageMsg(uint16 channel, uint16 textMsg, uint strNum, string@+ lexems)", focFUNCTION( BIND_CLASS Global_RadioMessageMsgLex ), asCALL_CDECL );
         RegisterGlobalFunction( engine, "bool RunDialog(Critter& player, Critter& npc, bool ignoreDistance)", focFUNCTION( BIND_CLASS Global_RunDialogNpc ), asCALL_CDECL );

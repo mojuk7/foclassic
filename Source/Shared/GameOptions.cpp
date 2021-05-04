@@ -254,6 +254,12 @@ GameOptions::GameOptions()
     RainTick = 60;
     RainSpeedX = 0;
     RainSpeedY = 15;
+	ItemContourColor = 0;
+	ContainerContourColor = 0;
+	MiscContourColor = 0;
+	ShowItemContour = false;
+	ShowContainerContour = false;
+	ShowMiscContour = false;
 
     // Mapper
     ClientPath = DIR_SLASH_SD;
